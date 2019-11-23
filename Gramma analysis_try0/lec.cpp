@@ -1,32 +1,15 @@
-#include<iostream>
-#include<fstream>
-#include<math.h>
-using namespace std;
+#include"main.h"
 
-const int iListSum = 100;
 int iListIndex = -1;
 string iList[iListSum];
-const int CListSum = 100;
 int CListIndex = -1;
 string CList[CListSum];	//Charset字符
-const int SListSum = 100;
 int SListIndex = -1;
 string SList[SListSum];
-const int cListSum = 100;
 int cListIndex = -1;
 double cList[cListSum];  //const 常数
-const int kListSum = 6;
-string kList[kListSum] = { "int","main","void","if","else","char" };
 int KListLike[kListSum] = { 0,0,0,0,0,0 };
 
-const int pListSum = 18;
-string pList[pListSum] = { "<=","==","=",">","<","+","-","*","/","{","}",",",";","(",")" ,"[","]" ,"#" };
-
-struct token
-{
-	char Type;
-	int Index;
-};
 
 token tokenList[100];
 int tokenIndex = -1;
@@ -56,6 +39,36 @@ bool isNum(const char& Char)
 	return false;
 }
 
+
+void ShowToken(token* Token)
+{
+	cout << " Token type " << Token->Type << " index " << Token->Index;
+	if (Token->Type == 'k')
+	{
+		cout << " value " << kList[Token->Index];
+	}
+	if (Token->Type == 'C')
+	{
+		cout << " value " << CList[Token->Index];
+	}
+	if (Token->Type == 'c')
+	{
+		cout << " value " << cList[Token->Index];
+	}
+	if (Token->Type == 'i')
+	{
+		cout << " value " << iList[Token->Index];
+	}
+	if (Token->Type == 'S')
+	{
+		cout << " value " << SList[Token->Index];
+	}
+	if (Token->Type == 'p')
+	{
+		cout << " value " << pList[Token->Index];
+	}
+	cout << endl;
+}
 
 void ShowAllToken()
 {
@@ -160,7 +173,7 @@ void judgeP(char* twoword)
 			{
 				AddToken('p', i);
 				char tempchar;
-				infile >> tempchar;
+				infile.get(tempchar);
 				return;
 			}
 		}
@@ -181,7 +194,7 @@ void judgeP(char* twoword)
 			{
 				AddToken('p', i);
 				char tempchar;
-				infile >> tempchar;
+				infile.get(tempchar);
 				return;
 			}
 		}
@@ -204,10 +217,10 @@ void judgeP(char* twoword)
 
 }
 
-int main()
+void MakeTokens(const char* dest)
 {
 
-	LoadFile("code.c", infile);
+	LoadFile(dest, infile);
 	bool lastIsAlphabet = true;
 
 	char identifiStr[100] = { 0 };
@@ -223,17 +236,26 @@ int main()
 	int SStrIndex = -1;
 	int pstate = 0;
 	char pTempChar = 0;
+	bool endFlag = false;
 
 	while (1)
 	{
-
-
 		char charNow;
 		infile.get(charNow);
 
+		//ShowAllToken();
 		if (infile.eof())
 		{
-			break;
+			if (!endFlag)
+			{
+				charNow = ' ';
+				endFlag = true;
+			}
+			else
+			{
+				break;
+			}
+
 		}
 
 
@@ -289,7 +311,8 @@ int main()
 						num *= 10;
 						num += charNow - '0';
 						char tempChar;
-						infile >> tempChar;
+						infile.get(tempChar);
+
 						infile.putback(tempChar);
 						if (!isNum(tempChar) && tempChar != '.')
 						{
@@ -307,9 +330,21 @@ int main()
 						num += charNow - '0';
 						numexp--;
 						char tempChar;
-						infile >> tempChar;
-						infile.putback(tempChar);
-						if (!isNum(tempChar))
+						infile.get(tempChar);
+						if (infile.eof() == false)
+						{
+							infile.putback(tempChar);
+							if (!isNum(tempChar))
+							{
+								numState = 0;
+								cListIndex++;
+								cList[cListIndex] = num * pow(10, numexp);
+								AddToken('c', cListIndex);
+								num = 0;
+								numexp = 0;
+							}
+						}
+						else
 						{
 							numState = 0;
 							cListIndex++;
@@ -318,6 +353,7 @@ int main()
 							num = 0;
 							numexp = 0;
 						}
+
 
 					}
 				}
@@ -376,12 +412,20 @@ int main()
 					Cstate = 0;
 				}
 
-
 				//-------------处理参数的部分[开始]-----------
 				if (charNow == '.' && numState == 1)
 				{
 
 					numState = 3;
+				}
+				else if (numState != 0)
+				{
+					numState = 0;
+					cListIndex++;
+					cList[cListIndex] = num * pow(10, numexp);
+					AddToken('c', cListIndex);
+					num = 0;
+					numexp = 0;
 				}
 
 				//------------处理常数的部分[结束]-----------
@@ -409,7 +453,7 @@ int main()
 				{
 					char twochar[2];
 					twochar[0] = charNow;
-					infile >> twochar[1];
+					infile.get(twochar[1]);
 					if (infile.eof() == false)
 					{
 						infile.putback(twochar[1]);
@@ -417,16 +461,31 @@ int main()
 
 					judgeP(twochar);
 				}
+				if (charNow == ' ')
+				{
+
+				}
 
 				identifiStrState = false;
+
 			}
 
 		}
-		//ShowAllToken();
 	}
 
+}
 
-	ShowAllToken();
 
-	return 0;
+int tokenNow = 0;
+
+token* GetToken()
+{
+	ShowToken(&tokenList[tokenNow + 1]);
+	return &tokenList[tokenNow++];
+
+}
+
+void PushBackToken()
+{
+	tokenNow--;
 }
