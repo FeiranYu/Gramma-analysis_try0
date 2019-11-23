@@ -73,6 +73,7 @@ void ShowToken(token* Token)
 void ShowAllToken()
 {
 	cout << endl;
+	cout << "TokenList is follow" << endl;
 	for (int i = 0; i <= tokenIndex; i++)
 	{
 		cout << i << " Token type " << tokenList[i].Type << " index " << tokenList[i].Index;
@@ -177,6 +178,7 @@ void judgeP(char* twoword)
 				return;
 			}
 		}
+		bool findOneFlag = false;
 		for (int i = 0; i < pListSum; i++)
 		{
 			if (pList[i].length() == 1)
@@ -184,20 +186,27 @@ void judgeP(char* twoword)
 				if (twoword[0] == pList[i].c_str()[0])
 				{
 					AddToken('p', i);
+					findOneFlag = true;
 				}
 			}
 
 		}
-		for (int i = 0; i < pListSum; i++)
+		if (findOneFlag == true)
 		{
-			if (twoword[1] == pList[i].c_str()[0])
+			for (int i = 0; i < pListSum; i++)
 			{
-				AddToken('p', i);
-				char tempchar;
-				infile.get(tempchar);
-				return;
+				if (twoword[1] == pList[i].c_str()[0])
+				{
+					AddToken('p', i);
+					char tempchar;
+					infile.get(tempchar);
+
+
+					return;
+				}
 			}
 		}
+		
 	}
 
 	else if (sizeof(twoword) == 4)
@@ -476,12 +485,12 @@ void MakeTokens(const char* dest)
 }
 
 
-int tokenNow = 0;
+int tokenNow = -1;
 
 token* GetToken()
 {
-	ShowToken(&tokenList[tokenNow + 1]);
-	return &tokenList[tokenNow++];
+	tokenNow++;
+	return &tokenList[tokenNow];
 
 }
 
