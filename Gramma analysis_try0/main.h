@@ -2,6 +2,7 @@
 #include<iostream>
 #include<fstream>
 #include<math.h>
+#include<string.h>
 using namespace std;
 
 
@@ -41,3 +42,4 @@ void ShowToken(token* Token);
 token* GetToken();
 void PushBackToken();
 bool E();
+bool LL1();
