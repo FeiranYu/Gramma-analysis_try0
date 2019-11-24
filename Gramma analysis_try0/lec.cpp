@@ -247,10 +247,17 @@ void MakeTokens(const char* dest)
 	char pTempChar = 0;
 	bool endFlag = false;
 
+
+
 	while (1)
 	{
 		char charNow;
 		infile.get(charNow);
+
+		if (charNow == '#')
+		{
+			cout << 233 << endl;
+		}
 
 		//ShowAllToken();
 		if (infile.eof())
@@ -466,6 +473,10 @@ void MakeTokens(const char* dest)
 					if (infile.eof() == false)
 					{
 						infile.putback(twochar[1]);
+					}
+					else
+					{
+						twochar[1] = '\0';
 					}
 
 					judgeP(twochar);

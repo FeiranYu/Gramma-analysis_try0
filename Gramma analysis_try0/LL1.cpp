@@ -1,20 +1,21 @@
 #include"main.h"
 
 
-int T_LIST[5][6] =
+int T_LIST[6][6] =
 {
 	//           i      w0    w1      (        )       #
-	/*  E  */    1 ,    0,    0,       0,      0,       0,
+	/*  E  */    1 ,    0,    0,       1,      0,       0,
 	/*  E1 */    0,     2,    0,       0,      3,       3,
 	/*  T  */    4,     0,    0,       4,      0,       0,
 	/*  T1 */	 0,     6,    5,       0,      6,       6,
-	/*  F  */    7,     0,    0,       8,      0,       0
+	/*  F  */    7,     0,    0,       8,      0,       0,
+	/*  )  */    0,     0,    0,       0,      9,       0
 };
 
 const string ListName[12] = { "i","w0","w1","(",")","#","E","E1","T","T1","F","e" };
 
-const int ListSum[8] = { 2,2,1,2,2,1,1,3 };
-const string List[8][5] = {
+const int ListSum[9] = { 2,2,1,2,2,1,1,2,1 };
+const string List[9][5] = {
 	{"T","E1"},
 	{"T","E1"},
 	{"e"},
@@ -22,11 +23,12 @@ const string List[8][5] = {
 	{"F","T1"},
 	{"e"},
 	{"i"},
-	{"(","E",")"}
+	{"E",")"},
+	{"e"}
 };
-const bool ReduceList[8]
+const bool ReduceList[9]
 {
-	0,1,0,0,1,0,1,1
+	0,1,0,0,1,0,1,1,1
 };
 
 
@@ -104,6 +106,10 @@ int getIndex(string nowState)
 	else if (strcmp(nowState.c_str(), "F") == 0)
 	{
 		return 4;
+	}
+	else if (strcmp(nowState.c_str(), ")") == 0)
+	{
+		return 5;
 	}
 }
 
