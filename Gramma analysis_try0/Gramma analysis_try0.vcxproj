@@ -127,6 +127,7 @@
     <ClCompile Include="Recursive decline.cpp" />
     <ClCompile Include="lec.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="stack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h" />

@@ -40,6 +40,37 @@ void MakeTokens(const char* dest);
 void ShowAllToken();
 void ShowToken(token* Token);
 token* GetToken();
+void GetTokenInit();
 void PushBackToken();
 bool E();
 bool LL1();
+
+class iStack
+{
+public:
+	token* pToken[100];
+	void push(token* Token);
+	token* pop();
+	int index = -1;
+};
+
+
+struct quad
+{
+	string op;
+	token *in1;
+	token *in2;
+	token *out;
+};
+
+
+class quadStack
+{
+public:
+	quad* pQuad[100];
+	void push(quad* Quad);
+	quad* pop();
+	int index = -1;
+};
+
+void ShowAllQuad();

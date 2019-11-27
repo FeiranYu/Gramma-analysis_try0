@@ -254,11 +254,6 @@ void MakeTokens(const char* dest)
 		char charNow;
 		infile.get(charNow);
 
-		if (charNow == '#')
-		{
-			cout << 233 << endl;
-		}
-
 		//ShowAllToken();
 		if (infile.eof())
 		{
@@ -497,6 +492,11 @@ void MakeTokens(const char* dest)
 
 
 int tokenNow = -1;
+
+void GetTokenInit()
+{
+	tokenNow = -1;
+}
 
 token* GetToken()
 {

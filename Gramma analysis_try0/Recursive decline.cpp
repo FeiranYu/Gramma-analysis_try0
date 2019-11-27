@@ -1,82 +1,70 @@
 #include"main.h"
-/*
-bool T();
-bool F();
 
-bool E()
+
+//--------------------------生成四元式部分[开始]--------------------------
+
+iStack OpStack;
+quadStack QuadStack;
+
+int tempIndexNow = 0;
+token* AddNewTempToken()
 {
-	if (T() == true)
+	token* newToken = new token;
+	iListIndex++;
+	char newStr[100] = { 0 };
+	sprintf_s(newStr, "t%d", tempIndexNow);
+	tempIndexNow++;
+	iList[iListIndex] = newStr;
+	newToken->Index = iListIndex;
+	newToken->Type = 'i';
+	return newToken;
+}
+
+void MackQuad(token* op)
+{
+	quad* newQuad = new quad;
+	newQuad->op = pList[op->Index];
+	newQuad->in1 = OpStack.pop();
+	newQuad->in2 = OpStack.pop();
+	newQuad->out = AddNewTempToken();
+	OpStack.push(newQuad->out);
+
+	QuadStack.push(newQuad);
+}
+
+void ShowQuad(quad* Quad)
+{
+
+	cout << "( " << Quad->op << ",";
+	if (Quad->in1->Type == 'i')
 	{
-		return true;
+		cout << iList[Quad->in1->Index] << ",";
 	}
 	else
 	{
-		if (E() == true)
-		{
-			token* TokenNow = GetToken();
-			if (TokenNow->Type == 'p' && (TokenNow->Index == 5 || TokenNow->Index == 6))	//5 + 6-
-			{
-				if (T() == true)
-				{
-					return true;
-				}
-			}
-		}
+		cout << cList[Quad->in1->Index] << ",";
 	}
-	return false;
-}
-
-bool E1()
-{
-
-}
-
-bool T()
-{
-	if (F() == true)
+	if (Quad->in2->Type == 'i')
 	{
-		return true;
+		cout << iList[Quad->in2->Index] << ",";
 	}
 	else
 	{
-		if (T() == true)
-		{
-			token* TokenNow = GetToken();
-			if (TokenNow->Type == 'p' && (TokenNow->Index == 7|| TokenNow->Index == 8))	// 7 * 8 /
-			{
-				if (F() == true)
-				{
-					return true;
-				}
-			}
-
-		}
+		cout << cList[Quad->in2->Index] << ",";
 	}
-	return false;
+	cout << iList[Quad->out->Index] << ")" << endl;
+
 }
 
-bool F()
+void ShowAllQuad()
 {
-	token* TokenNow = GetToken();
-	if (TokenNow->Type == 'i' || TokenNow->Type == 'c')
+	for (int i = 0; i <= QuadStack.index; i++)
 	{
-		return true;
+		ShowQuad(QuadStack.pQuad[i]);
 	}
-	else if(TokenNow->Type=='p'&&TokenNow->Index==13)	//左括号
-	{
-		if (E() == true)
-		{
-			token* TokenNow = GetToken();
-			if (TokenNow->Type == 'p' && TokenNow->Index == 14) //右括号
-			{
-				return true;
-			}
-		}
-	}
-	return false;
 }
 
-*/
+//--------------------------生成四元式部分[结束]--------------------------
 
 bool T();
 bool E1();
@@ -102,11 +90,14 @@ bool E1()
 	{
 		if (T() == true)
 		{
+			
 			if (E1() == true)
 			{
+				MackQuad(TokenNow);
 				return true;
 			}
 		}
+		
 	}
 	else
 	{
@@ -135,11 +126,14 @@ bool T1()
 	{
 		if (F() == true)
 		{
+			
 			if (T1() == true)
 			{
+				MackQuad(TokenNow);
 				return true;
 			}
 		}
+		
 	}
 	else
 	{
@@ -153,6 +147,7 @@ bool F()
 	token* TokenNow = GetToken();
 	if (TokenNow->Type == 'i' || TokenNow->Type == 'c')
 	{
+		OpStack.push(TokenNow);
 		return true;
 	}
 	else if (TokenNow->Type == 'p' && TokenNow->Index == 13)	//左括号
